@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic Tac Toe</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1 class="glowing-text">
+        <span class="glowing-txt">T<span class="faulty-letter">I</span>C T<span class="faulty-letter">A</span>C T<span class="faulty-letter">O</span>E</span>
+    </h1>    
+    <div id="board">
+        <div class="cell" data-row="0" data-col="0"></div>
+        <div class="cell" data-row="0" data-col="1"></div>
+        <div class="cell" data-row="0" data-col="2"></div>
+        <div class="cell" data-row="1" data-col="0"></div>
+        <div class="cell" data-row="1" data-col="1"></div>
+        <div class="cell" data-row="1" data-col="2"></div>
+        <div class="cell" data-row="2" data-col="0"></div>
+        <div class="cell" data-row="2" data-col="1"></div>
+        <div class="cell" data-row="2" data-col="2"></div>
+    </div>
+    <div id="message"></div>
+    <script>
+        let board = [
+    [' ', ' ', ' '],
+    [' ', ' ', ' '],
+    [' ', ' ', ' ']
+];
+const player = 'X';
+const computer = 'O';
+
+document.querySelectorAll('.cell').forEach(cell => {
+    cell.addEventListener('click', function () {
+        const row = this.dataset.row;
+        const col = this.dataset.col;
+        if (board[row][col] === ' ') {
+            board[row][col] = player;
+            this.innerText = player;
+            this.classList.add('X'); // Add the class for X
+            checkGameState();
+        }
+    });
+});
+
+function checkGameState() {
+    fetch('/move', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({board, player, computer})
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.player_wins) {
+            document.getElementById('message').innerText = "You win!";
+        } else if (data.computer_wins) {
+            document.getElementById('message').innerText = "Computer wins!";
+            updateBoard(data.board);
+        } else if (data.tied) {
+            document.getElementById('message').innerText = "It's a tie!";
+            updateBoard(data.board);
+        } else {
+            // Update the board with the computer's move
+            const computerRow = data.computer_row;
+            const computerCol = data.computer_col;
+            board[computerRow][computerCol] = computer;
+            const computerCell = document.querySelector(`.cell[data-row="${computerRow}"][data-col="${computerCol}"]`);
+            computerCell.innerText = computer;
+            computerCell.classList.add('O'); // Add the class for O
+            updateBoard(data.board);
+        }
+    });
+}
+
+function updateBoard(updatedBoard) {
+    for (let r = 0; r < 3; r++) {
+        for (let c = 0; c < 3; c++) {
+            const cell = document.querySelector(`.cell[data-row="${r}"][data-col="${c}"]`);
+            cell.innerText = updatedBoard[r][c];
+            if (updatedBoard[r][c] === 'X') {
+                cell.classList.add('X'); // Add the class for X
+            } else if (updatedBoard[r][c] === 'O') {
+                cell.classList.add('O'); // Add the class for O
+            }
+        }
+    }
+}
+    </script>
+</body>
+</html>

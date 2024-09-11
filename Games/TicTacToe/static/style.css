@@ -1,0 +1,186 @@
+@import url("https://fonts.googleapis.com/css?family=Raleway");
+
+:root {
+  --glow-color: hsl(186 100% 69%);
+}
+
+body {
+    font-family: "Raleway", sans-serif;
+    text-align: center;
+    margin: 0;
+    padding: 20px;
+    background-color: #27282c;
+    display: flex; /* Use flexbox for centering */
+    flex-direction: column; /* Align items in a column */
+    justify-content: center; /* Center vertically */
+    align-items: center; /* Center horizontally */
+    height: 100vh; /* Full viewport height */
+}
+
+#board {
+    display: grid;
+    grid-template-columns: repeat(3, 100px);
+    grid-gap: 0; /* Remove gap between cells */
+    margin: 40px auto;
+}
+
+.cell {
+    width: 100px;
+    height: 100px;
+    border: none; /* Remove outer borders */
+    border-bottom: 4px solid rgb(53, 53, 53); /* Add bottom border for internal lines */
+    border-left: 4px solid rgb(53, 53, 53);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5em;
+    cursor: pointer;
+}
+
+/* Specific borders for the last row and last column */
+.cell:nth-child(1),
+.cell:nth-child(4),
+.cell:nth-child(7) {
+    border-left: none; /* Remove left border for the first column */
+}
+
+.cell:nth-last-child(-n + 3) {
+    border-bottom: none; /* Remove bottom border for the last row */
+}
+
+/* Adjust the .cell class to use the neon class */
+.cell.X {
+    color: #ff0033; /* Neon red for X */
+    text-shadow: 
+        0 0 5px rgba(255, 0, 51, 0.5),  /* Adjusted for transparency */
+        0 0 10px rgba(255, 0, 51, 0.5),
+        0 0 15px rgba(255, 0, 51, 0.5),
+        0 0 20px rgba(255, 0, 51, 0.5),
+        0 0 30px rgba(255, 0, 51, 0.5), 
+        0 0 40px rgba(255, 0, 51, 0.5);
+}
+
+.cell.O {
+    color: #00ccff; /* Neon blue for O */
+    text-shadow: 
+        0 0 5px rgba(0, 204, 255, 0.5),  /* Adjusted for transparency */
+        0 0 10px rgba(0, 204, 255, 0.5),
+        0 0 15px rgba(0, 204, 255, 0.5),
+        0 0 20px rgba(0, 204, 255, 0.5),
+        0 0 30px rgba(0, 204, 255, 0.5), 
+        0 0 40px rgba(0, 204, 255, 0.5);
+}
+
+/* Glowing effect for header */
+.glowing-text {
+    position: relative;
+    color: var(--glow-color);
+    cursor: default; /* No pointer for header */
+    border: 0.15em solid var(--glow-color);
+    border-radius: 0.45em;
+    background: none;
+    perspective: 2em;
+    font-family: "Raleway", sans-serif;
+    font-size: 3em;
+    font-weight: 900;
+    letter-spacing: 0.1em; /* Adjust spacing */
+    text-transform: uppercase;
+  
+    -webkit-box-shadow: inset 0px 0px 0.5em 0px var(--glow-color),
+      0px 0px 0.5em 0px var(--glow-color);
+    -moz-box-shadow: inset 0px 0px 0.5em 0px var(--glow-color),
+      0px 0px 0.5em 0px var(--glow-color);
+    box-shadow: inset 0px 0px 0.5em 0px var(--glow-color),
+      0px 0px 0.5em 0px var(--glow-color);
+    animation: border-flicker 2s linear infinite;
+  }
+  
+  .glowing-txt {
+    margin-right: -0.1em;
+    -webkit-text-shadow: 0 0 0.125em hsl(0 0% 100% / 0.3),
+      0 0 0.45em var(--glow-color);
+    -moz-text-shadow: 0 0 0.125em hsl(0 0% 100% / 0.3),
+      0 0 0.45em var(--glow-color);
+    text-shadow: 0 0 0.125em hsl(0 0% 100% / 0.3), 0 0 0.45em var(--glow-color);
+    animation: text-flicker 3s linear infinite;
+  }
+  
+  .faulty-letter {
+    opacity: 0.5;
+    animation: faulty-flicker 2s linear infinite;
+  }
+  
+  .glowing-btn::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    opacity: 0.2;
+    filter: blur(0.5em); 
+    transform: translateY(120%) rotateX(95deg) scale(1, 0.2);
+    background: var(--glow-color);
+    pointer-events: none;
+  }
+  
+  
+  .glowing-btn::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    opacity: 0;
+    z-index: -1;
+    background-color: var(--glow-color);
+    box-shadow: 0 0 2em 0.2em var(--glow-color);
+    transition: opacity 100ms linear;
+  }
+  
+  /* Flicker animations */
+  @keyframes faulty-flicker {
+    0% { opacity: 0.1; }
+    2% { opacity: 0.1; }
+    4% { opacity: 0.5; }
+    19% { opacity: 0.5; }
+    21% { opacity: 0.1; }
+    23% { opacity: 1; }
+    80% { opacity: 0.5; }
+    83% { opacity: 0.4; }
+    87% { opacity: 1; }
+  }
+  
+  @keyframes text-flicker {
+    0% { opacity: 0.1; }
+    2% { opacity: 1; }
+    8% { opacity: 0.1; }
+    9% { opacity: 1; }
+    12% { opacity: 0.1; }
+    20% { opacity: 1; }
+    25% { opacity: 0.3; }
+    30% { opacity: 1; }
+    70% { opacity: 0.7; }
+    72% { opacity: 0.2; }
+    77% { opacity: 0.9; }
+    100% { opacity: 0.9; }
+  }
+  
+  @keyframes border-flicker {
+    0% { opacity: 0.1; }
+    2% { opacity: 1; }
+    4% { opacity: 0.1; }
+    8% { opacity: 1; }
+    70% { opacity: 0.7; }
+    100% { opacity: 1; }
+  }
+
+#message {
+    margin-top: 20px;
+    font-family: "Raleway", sans-serif;
+    font-size: 1.5em;
+    color: hsl(186 100% 69%);
+    filter: blur(0.04em); 
+}
+
